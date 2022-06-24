@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7.0-alpine
+    ports:
+    - 6379
+    command: redis-server --save 20 1 --loglevel warning --requirepass R3d1s
+    volumes:
+    - redis:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 3
+
+  auth:
+    image: gr4vy.dev/auth
+    ports:
+    - 5001:5001
+    environment:
+    - HTTP_PORT=5001
+    - JWT_SECRET=s3cr3t
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:5001/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 3s
+
+  core:
+    depends_on:
+    - redis
+    image: gr4vy.dev/core
+    ports:
+    - 5002:5002
+    environment:
+    - HTTP_PORT=5002
+    - REDIS_URL=redis://:R3d1s@redis:6379/0
+    - JWT_SECRET=s3cr3t
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:5002/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 3s
+
+  psp:
+    depends_on:
+    - redis
+    image: gr4vy.dev/psp
+    environment:
+    - REDIS_URL=redis://:R3d1s@redis:6379/0
+
+volumes:
+  redis:
+    driver: local
