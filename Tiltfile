@@ -4,7 +4,9 @@ docker_compose('docker-compose.yaml')
 
 dc_resource('redis', labels=['backing'])
 
-dc_resource('auth', labels=['services'])
+dc_resource('gateway', labels=['infra'])
+
+dc_resource('auth', resource_deps=['gateway'], labels=['services'])
 docker_build('gr4vy.dev/auth', 'auth-api',
   live_update = [
     sync('auth-api', '/app'),
@@ -21,10 +23,10 @@ cmd_button(name='token',
       text_input('AUTH_USER', label='username', default='alice'),
       text_input('AUTH_PASS', label='password', default='password'),
     ],
-    argv=['/bin/sh', '-c', 'http --ignore-stdin -v POST http://0.0.0.0:5001/token username=$AUTH_USER password=$AUTH_PASS'],
+    argv=['/bin/sh', '-c', 'http --ignore-stdin -v POST http://localhost/auth/token username=$AUTH_USER password=$AUTH_PASS'],
 )
 
-dc_resource('core', resource_deps=['redis'], labels=['services'])
+dc_resource('core', resource_deps=['redis', 'gateway'], labels=['services'])
 docker_build('gr4vy.dev/core', 'core-api',
   live_update = [
     sync('core-api', '/app'),
@@ -42,7 +44,7 @@ cmd_button(name='transaction',
       text_input('CORE_CURRENCY', label='currency', default='USD'),
       text_input('CORE_TOKEN', label='token'),
     ],
-    argv=['/bin/sh', '-c', 'http --ignore-stdin -v POST http://0.0.0.0:5002/transaction amount=$CORE_AMOUNT currency=$CORE_CURRENCY token=$CORE_TOKEN'],
+    argv=['/bin/sh', '-c', 'http --ignore-stdin -v POST http://localhost/transaction amount=$CORE_AMOUNT currency=$CORE_CURRENCY token=$CORE_TOKEN'],
 )
 
 dc_resource('psp', resource_deps=['redis'], labels=['services'])

@@ -14,15 +14,32 @@ services:
       timeout: 3s
       retries: 3
 
+  gateway:
+    image: kong:2.8.1-alpine
+    ports:
+    - 80:8000
+    - 8001:8001
+    environment:
+    - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+    - KONG_ADMIN_ERROR_LOG=/dev/stderr
+    - KONG_ADMIN_LISTEN=0.0.0.0:8001
+    - KONG_DATABASE=off
+    - KONG_DECLARATIVE_CONFIG=/kong/declarative/kong.yaml
+    - KONG_PROXY_ACCESS_LOG=/dev/stdout
+    - KONG_PROXY_ERROR_LOG=/dev/stderr
+    - KONG_PROXY_LISTEN=0.0.0.0:8000
+    volumes:
+    - ./gateway:/kong/declarative/
+
   auth:
     image: gr4vy.dev/auth
     ports:
-    - 5001:5001
+    - 5000
     environment:
-    - HTTP_PORT=5001
+    - HTTP_PORT=5000
     - JWT_SECRET=s3cr3t
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:5001/health" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:5000/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -33,13 +50,13 @@ services:
     - redis
     image: gr4vy.dev/core
     ports:
-    - 5002:5002
+    - 5000
     environment:
-    - HTTP_PORT=5002
+    - HTTP_PORT=5000
     - REDIS_URL=redis://:R3d1s@redis:6379/0
     - JWT_SECRET=s3cr3t
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:5002/health" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:5000/health" ]
       interval: 30s
       timeout: 10s
       retries: 3

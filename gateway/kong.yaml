@@ -1,0 +1,19 @@
+_format_version: "2.1"
+_transform: true
+
+services:
+- name: auth
+  url: http://auth:5000
+  routes:
+  - name: auth
+    strip_path: true
+    paths:
+    - /auth
+
+- name: core
+  url: http://core:5000/
+  routes:
+  - name: core
+    strip_path: true
+    paths:
+    - /
