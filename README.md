@@ -4,9 +4,7 @@
 
 Gr4vy is a building a payment orchestration platform.
 
-As a Platform engineer, you are tasked with improving the engineering efficiency by producing automation tools that provision services in an efficient, predictable and reproducible way.
-
-In this exercise we use [HTTPie](https://github.com/httpie/httpie) in our examples for clarity.
+This repo is aimed at improving the engineering efficiency by producing automation tools that provision services in an efficient, predictable and reproducible way. More specifically, this repo provides the tools and configurations to automate the provisioning of a **local development** environment.
 
 ## Architecture Overview
 
@@ -45,24 +43,45 @@ A transaction flow is as follows:
 
 We use environment variables to configure a service.
 
-## Your task
+## Requirements
 
-- Read the documentation for each service. Run and test them to make sure they work as expected.
-- Once you're familiar with the services, use your preferred tools to automate provisioning of a **local development** environment.
-- Be sure to include external dependencies like Redis and configuration management.
-- In order for a microservices-based architecture to work best, implement a HTTP router in front of the services that routes requests to the correct service. A popular solution is path-based routing:
-  - <http://platform/auth/*> → <http://auth-api/*>
-  - <http://platform/transaction/*> → <http://core-api/*>
-- Make your automation available on a public GitHub repository with a `README` on how to get things started.
+[Docker](https://www.docker.com) (or as alternative [Rancher Desktop](https://rancherdesktop.io)) to run containers.
 
-Don't worry too much about making this production ready. We may discuss production considerations with you later on.
+[Docker compose](https://docs.docker.com/compose) to run multi-container applications infrastructure, defined in a deplarative way.
 
-Please spend no more than 1-2 hours on this exercise.
+[Tilt](https://tilt.dev) to provide smart rebuilds, live updates and provide a dashboard to see all the pieces of your app, trigger custom workflows.
 
-## Bonus (Optional)
+[HTTPie](https://github.com/httpie/httpie) to make HTTP requests in user-friendly way via command-line.
 
-- Containerise services.
-- Apply the [Twelve Factor App](https://12factor.net/) methodology.
+## Features
+
+1. Each application is containerized.
+2. Updating source code or requirements.txt does not require re-building the Docker container (to increase development velocity).
+3. Multi-container application architecture (including backing services), defined declaratively.
+4. Out-of-the-box HTTP router in front of the services, providing a single URL with path-based routing
+5. Single web-based dashboard to monitor all the services (grouped by categories).
+6. Custom web buttons to invoke APIs.
+
+## How to use
+
+1. Check that all dependencies are fulfilled
+2. `git clone` this repository and open a terminal in it
+3. Type `tilt up` to start all the services and press `space` key to open the dashboard
+
+![Dashboard](docs/dashboard.png "Dashboard")
+
+At this point you can:
+
+- edit the source code and have it instantly up and running inside a container
+- make HTTP calls (e.g. via HTTPie) to <http://localhost/auth/*> so that they are proxy-ed to the `auth-api` service
+- make HTTP calls (e.g. via HTTPie) to <http://localhost/*> so that they are proxy-ed to the `core-api` service
+- watch real time logs for each service by clicking on a service name
+- click on the widgets (the `key` and `dollar` icons) to call respectively the `auth/token` and the `/transaction` apis
+
+## Additional (future) improvements
+
+You can edit the `/etc/hosts` file in rodert to have an URLs like <http://platform> instead of <http://localhost>
+or even more consider defining a custom DNS server.
 
 [Auth API]: auth-api
 [Core API]: core-api
