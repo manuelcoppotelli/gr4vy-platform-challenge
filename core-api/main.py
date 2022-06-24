@@ -62,9 +62,9 @@ if __name__ == '__main__':
     jwt_secret: str = os.environ['JWT_SECRET']
 
     # Flask config
-    app.config['RQ_DEFAULT_URL'] = redis_url
+    app.config['RQ_REDIS_URL'] = redis_url
     app.config['JWT_SECRET'] = jwt_secret
 
     # Run app
+    rq.init_app(app)
     app.run(host='0.0.0.0', port=http_port, threaded=True)
-    
