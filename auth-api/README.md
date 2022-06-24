@@ -18,7 +18,7 @@ Python 3.9.7
 $ pip install -r requirements.txt
 $ export HTTP_PORT=5000
 $ export JWT_SECRET=secret
-$ python main.py  
+$ python main.py
  * Serving Quart app 'main'
  * Environment: production
  * Please use an ASGI server (e.g. Hypercorn) directly in production
@@ -32,7 +32,7 @@ $ python main.py
 | Environment variable | Description                                                                            |
 | -------------------- | -------------------------------------------------------------------------------------- |
 | `HTTP_PORT`            | **Required**. Port to bind HTTP server. Default: `5000`.                               |
-| `JWT_SECRET`           | **Required**. [JSON Web Tokens](https://jwt.io/) secret. Must be the same as that of [`core-api`](). |
+| `JWT_SECRET`           | **Required**. [JSON Web Tokens](https://jwt.io/) secret. Must be the same as that of [`core-api`](core-api). |
 
 ## User database
 
@@ -59,13 +59,11 @@ User creation and management are out of the scope of this service.
 
 Health check to see if the service is up.
 
-#### Request
+#### Health Request
 
 ```bash
 $ http -v http://0.0.0.0:5000/health
-```
 
-```http
 GET /health HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
@@ -74,10 +72,10 @@ Host: 0.0.0.0:5000
 User-Agent: HTTPie/2.6.0
 ```
 
-#### Response
+#### Health Response
 
 ```http
-HTTP/1.1 200 
+HTTP/1.1 200
 content-length: 29
 content-type: application/json
 date: Tue, 02 Nov 2021 20:20:46 GMT
@@ -90,12 +88,11 @@ server: hypercorn-h11
 
 ```
 
-
 ### `POST /token` - Create an authentication token
 
 Create an authentication token for the given user. Tokens are valid for **30 seconds**.
 
-#### Request
+#### Token Request
 
 | Argument | Description                                  |
 | -------- | -------------------------------------------- |
@@ -126,10 +123,10 @@ User-Agent: HTTPie/2.6.0
 }
 ```
 
-#### Response
+#### Token Response
 
 ```http
-HTTP/1.1 200 
+HTTP/1.1 200
 content-length: 179
 content-type: application/json
 date: Tue, 02 Nov 2021 20:26:03 GMT
@@ -138,5 +135,4 @@ server: hypercorn-h11
 {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImFsaWNlIiwiZW5hYmxlZCI6dHJ1ZSwiZXhwIjoxNjM1ODg0NzkzfQ.t4fLg-F8Ev3nwDED18OiQaqCOCzG7bgIO0s1AbFoRZo"
 }
-
 ```

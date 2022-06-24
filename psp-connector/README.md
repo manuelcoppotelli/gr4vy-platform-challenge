@@ -33,10 +33,9 @@ $ python main.py
 | -------------------- | ------------------------------------------------------------ |
 | `REDIS_URL`            | **Required**. Redis URL. Default: `redis://127.0.0.1:6379/0` |
 
-
 ## Example Output
 
-```
+```log
 11:57:11 default: __main__.make_transaction(amount=100, currency='USD', user_id=1) (089f53a1-de72-4c55-b8c0-7a3108987118)
 ==> Making transaction with PSP: User ID: 1, Amount: 100, Currency: USD
 11:57:11 default: Job OK (089f53a1-de72-4c55-b8c0-7a3108987118)
